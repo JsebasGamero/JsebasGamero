@@ -16,21 +16,25 @@ import {
 const PROFILE = {
   handle: 'JSEBASGAMERO',
   role: 'FULL-STACK DEVELOPER',
-  focus: 'CYBERSECURITY',
-  tagline: 'código limpio · sistemas seguros · del frontend a la base de datos',
+  focus: '.NET · AZURE · CYBERSECURITY',
+  tagline: 'C# · .NET · Azure · JavaScript · TypeScript — software seguro del frontend a la nube',
   host: 'jsebas@sec-ops',
+  // [clave, valor, nota opcional en rojo]
   neofetch: [
     ['Usuario', 'JsebasGamero'],
     ['Rol', 'Full-Stack Developer'],
+    ['Core', 'C# · .NET · Azure', '[ uso diario ]'],
     ['Frontend', 'JavaScript · TypeScript · React · Next.js · Tailwind'],
-    ['Backend', 'Node.js · Express · NestJS · REST APIs'],
+    ['Backend', '.NET · Node.js · Express · NestJS · REST APIs'],
     ['Datos', 'PostgreSQL · MySQL · MongoDB · Redis · Prisma'],
-    ['DevOps', 'Git · Docker · GitHub Actions · Linux · Vercel'],
+    ['Cloud', 'Azure · Vercel · Docker'],
+    ['DevOps', 'Git · GitHub Actions · Linux'],
     ['Seguridad', 'Redes · Linux · SQL · Gestión de riesgos'],
     ['Shell', 'zsh + café + curiosidad infinita'],
     ['Uptime', 'compilando ideas 24/7'],
   ],
   status: [
+    'Desarrollando soluciones con C#, .NET y Azure en el día a día',
     'Construyendo aplicaciones web seguras de punta a punta',
     'Formándome en ciberseguridad: redes, Linux, SQL y gestión de riesgos',
     'Abierto a colaborar en proyectos con impacto real',
@@ -202,7 +206,7 @@ function emblem() {
 
 function terminal() {
   const P = PROFILE;
-  const W = 1200, H = 640, FS = 17, LH = 28, X = 32, CW = FS * 0.6;
+  const W = 1200, FS = 17, LH = 28, X = 32, CW = FS * 0.6;
   const promptParts = [[P.host, C.red, 700], [':', C.text], ['~', C.redHot, 700], ['$ ', C.text]];
   const promptW = tw(`${P.host}:~$ `, FS);
   const prompt = (y, at) => appear(line(X, y, promptParts, { size: FS }), at);
@@ -217,21 +221,25 @@ function terminal() {
   body += c1.svg;
   t = c1.end + 0.3;
 
-  // Emblema
-  body += `<g opacity="0" transform="translate(215 272)">${emblem()}<animate attributeName="opacity" from="0" to="1" begin="${n2(t)}s" dur=".8s" fill="freeze"/></g>`;
-  body += appear(text(215, 436, '[ CLEARANCE: GRANTED ]', { size: 12, fill: C.red, anchor: 'middle', ls: 0.15, weight: 700 }), t + 0.6);
-
-  // Info estilo neofetch
+  // Emblema, centrado verticalmente respecto al bloque de info
   const IX = 430;
   let iy = 128;
+  const infoBottom = iy + (P.neofetch.length + 2) * LH;
+  const ey = Math.round((iy - 20 + infoBottom) / 2) - 12;
+  body += `<g opacity="0" transform="translate(215 ${ey})">${emblem()}<animate attributeName="opacity" from="0" to="1" begin="${n2(t)}s" dur=".8s" fill="freeze"/></g>`;
+  body += appear(text(215, ey + 164, '[ CLEARANCE: GRANTED ]', { size: 12, fill: C.red, anchor: 'middle', ls: 0.15, weight: 700 }), t + 0.6);
+
+  // Info estilo neofetch
   const who = `${P.handle.toLowerCase()}@github`;
   body += appear(line(IX, iy, [[P.handle.toLowerCase(), C.red, 700], ['@', C.text], ['github', C.red, 700]], { size: FS }), t);
   iy += LH;
   body += appear(text(IX, iy, '─'.repeat(len(who)), { size: FS, fill: C.redDim }), t + 0.08);
   t += 0.16;
-  for (const [k, v] of P.neofetch) {
+  for (const [k, v, note] of P.neofetch) {
     iy += LH;
-    body += appear(line(IX, iy, [[k.padEnd(10), C.red, 700], [': ', C.muted], [v, C.text]], { size: FS }), t);
+    const parts = [[k.padEnd(10), C.red, 700], [': ', C.muted], note ? [v, C.white, 700] : [v, C.text]];
+    if (note) parts.push([`  ${note}`, C.red, 700]);
+    body += appear(line(IX, iy, parts, { size: FS }), t);
     t += 0.09;
   }
   iy += LH;
@@ -240,7 +248,7 @@ function terminal() {
   t += 0.5;
 
   // $ ./status --now
-  y = 488;
+  y = iy + 52;
   body += prompt(y, t);
   const c2 = typed(X + promptW, y, './status --now', { begin: t + 0.3, cps: 14, size: FS });
   body += c2.svg;
@@ -253,6 +261,7 @@ function terminal() {
   y += LH + 8;
   body += prompt(y, t);
   body += appear(`<rect class="blink" x="${n2(X + promptW)}" y="${y - 15}" width="${n2(CW)}" height="19" fill="${C.red}"/>`, t);
+  const H = y + 32;
 
   const body2 = `${defs(round('rd', W, H))}
 <g clip-path="url(#rd)">

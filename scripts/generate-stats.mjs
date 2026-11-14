@@ -9,13 +9,22 @@
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { C, svg, text, n2, defs, glowUser, frame, panelHead } from './theme.mjs';
+import { C, svg, text, tw, n2, defs, glowUser, frame, panelHead } from './theme.mjs';
 
 const args = process.argv.slice(2);
 const MOCK = args.includes('--mock');
 const OUT = args.find((a) => !a.startsWith('--')) ?? 'dist';
 const LOGIN = process.env.GH_USER || process.env.GITHUB_REPOSITORY_OWNER;
 const TOKEN = process.env.GITHUB_TOKEN;
+
+// Stack con el que más trabajas hoy. Se muestra en TELEMETRÍA aparte de LANG_DISTRIBUTION,
+// porque ese gráfico solo puede medir tus repos públicos (tu trabajo diario está en repos privados).
+// icon: 'csharp' | 'dotnet' | 'azure' | 'generic'
+const CORE_STACK = [
+  { name: 'C#', sub: 'lenguaje principal', icon: 'csharp' },
+  { name: '.NET', sub: 'framework principal', icon: 'dotnet' },
+  { name: 'Azure', sub: 'cloud principal', icon: 'azure' },
+];
 
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const fmt = (n) => n.toLocaleString('en-US');
@@ -160,8 +169,64 @@ function mockData() {
 }
 
 /* ───────────────────────────── STATS.SVG ───────────────────────────── */
+function coreIcon(kind, label) {
+  const box = `fill="${C.redDeep}" stroke="${C.red}" stroke-width="2.5"`;
+  if (kind === 'csharp') {
+    const pts = Array.from({ length: 6 }, (_, i) => {
+      const a = ((60 * i - 90) * Math.PI) / 180;
+      return `${n2(Math.cos(a) * 24)},${n2(Math.sin(a) * 24)}`;
+    }).join(' ');
+    return `<polygon points="${pts}" ${box}/>` + text(0, 6, 'C#', { size: 17, weight: 700, fill: C.red, anchor: 'middle' });
+  }
+  if (kind === 'azure') {
+    return `<path transform="translate(-23 -22) scale(1.9)" d="M7 19h10.5a4.5 4.5 0 0 0 .6-8.96A6 6 0 0 0 6.4 9.1 5 5 0 0 0 7 19z" fill="${C.redDeep}" stroke="${C.red}" stroke-width="1.3"/>`;
+  }
+  const short = kind === 'dotnet' ? '.NET' : label.slice(0, 4).toUpperCase();
+  return `<rect x="-22" y="-22" width="44" height="44" rx="9" ${box}/>` + text(0, 5, short, { size: 12, weight: 700, fill: C.red, anchor: 'middle' });
+}
+
+function coreStrip(W, top) {
+  const n = CORE_STACK.length;
+  if (!n) return { svg: '', bottom: top };
+  const G = 16, CH = 82, CW = (W - 64 - (n - 1) * G) / n, Y = top + 22;
+  let out =
+    `<line x1="30" y1="${top - 20}" x2="${W - 30}" y2="${top - 20}" stroke="${C.red}" stroke-opacity=".15"/>` +
+    text(32, top + 4, 'CORE_STACK', { size: 12, fill: C.red, weight: 700, ls: 0.2 }) +
+    text(32 + tw('CORE_STACK', 12, 0.2) + 14, top + 4, '// lo que más uso hoy en día', { size: 11, fill: C.muted }) +
+    text(W - 32, top + 4, `${n} MÓDULOS ACTIVOS`, { size: 11, fill: C.red, anchor: 'end', weight: 700, ls: 0.1 });
+  CORE_STACK.forEach((c, i) => {
+    const x = 32 + i * (CW + G);
+    const base = Y + 66;
+    // Ecualizador decorativo (no representa ninguna métrica)
+    const SEQ = [6, 22, 10, 18, 8, 20, 6];
+    let bars = '';
+    for (let b = 0; b < 5; b++) {
+      const hs = SEQ.map((_, k) => SEQ[(k + b * 2 + i) % SEQ.length]);
+      bars +=
+        `<rect x="${n2(x + CW - 84 + b * 12)}" y="${base - hs[0]}" width="6" height="${hs[0]}" fill="${C.red}" opacity=".85">` +
+        `<animate attributeName="height" values="${hs.join(';')}" dur="1.4s" repeatCount="indefinite"/>` +
+        `<animate attributeName="y" values="${hs.map((h) => base - h).join(';')}" dur="1.4s" repeatCount="indefinite"/></rect>`;
+    }
+    const act = 'ACTIVE';
+    out +=
+      `<g opacity="0"><animate attributeName="opacity" from="0" to="1" begin="${n2(0.9 + i * 0.15)}s" dur=".5s" fill="freeze"/>` +
+      `<rect x="${n2(x)}" y="${Y}" width="${n2(CW)}" height="${CH}" rx="10" fill="${C.tile}" stroke="${C.red}" stroke-opacity=".55"/>` +
+      `<path d="M${n2(x)} ${Y + 22} V${Y + 10} Q${n2(x)} ${Y} ${n2(x + 10)} ${Y} H${n2(x + 22)} M${n2(x + CW)} ${Y + CH - 22} V${Y + CH - 10} Q${n2(x + CW)} ${Y + CH} ${n2(x + CW - 10)} ${Y + CH} H${n2(x + CW - 22)}" fill="none" stroke="${C.red}" stroke-width="2.5"/>` +
+      `<g transform="translate(${n2(x + 46)} ${Y + 41})" filter="url(#neonS)">${coreIcon(c.icon, c.name)}</g>` +
+      text(x + 88, Y + 40, c.name, { size: 26, weight: 700, fill: C.white, filter: 'neonS' }) +
+      text(x + 88, Y + 62, c.sub, { size: 12, fill: C.muted }) +
+      `<circle class="blink" cx="${n2(x + CW - 20 - tw(act, 11, 0.15) - 10)}" cy="${Y + 24}" r="4" fill="${C.red}"/>` +
+      text(x + CW - 20, Y + 28, act, { size: 11, fill: C.red, weight: 700, anchor: 'end', ls: 0.15 }) +
+      bars +
+      `</g>`;
+  });
+  return { svg: out, bottom: Y + CH };
+}
+
 function statsSvg(d) {
-  const W = 1200, H = 452;
+  const W = 1200;
+  const core = coreStrip(W, 450);
+  const H = core.bottom + 44;
   const scan = d.now.toISOString().slice(0, 16).replace('T', ' ');
 
   // Tarjetas
@@ -213,7 +278,7 @@ function statsSvg(d) {
   const LX = 790, LW = W - 32 - LX;
   let langs =
     text(LX, 104, 'LANG_DISTRIBUTION', { size: 12, fill: C.red, weight: 700, ls: 0.2 }) +
-    text(LX + LW, 104, `TOP ${d.langs.length}`, { size: 11, fill: C.muted, anchor: 'end' });
+    text(LX + LW, 104, `TOP ${d.langs.length} · REPOS PÚBLICOS`, { size: 11, fill: C.muted, anchor: 'end' });
   if (!d.langs.length) langs += text(LX, 140, 'sin datos todavía', { size: 13, fill: C.muted });
   d.langs.forEach((l, i) => {
     const y = 140 + i * 46;
@@ -233,9 +298,10 @@ function statsSvg(d) {
   ${tilesSvg}
   ${ring}
   ${langs}
-  <path d="M32 430 l4 4 l8 -8" fill="none" stroke="${C.red}" stroke-width="2"/>
-  ${text(52, 435, 'SCAN COMPLETE :: INTEGRITY OK', { size: 11, fill: C.muted, ls: 0.08 })}
-  ${text(W - 32, 435, 'AUTO-GENERATED BY GITHUB ACTIONS', { size: 11, fill: C.red, anchor: 'end', ls: 0.08 })}
+  ${core.svg}
+  <path d="M32 ${H - 22} l4 4 l8 -8" fill="none" stroke="${C.red}" stroke-width="2"/>
+  ${text(52, H - 17, 'SCAN COMPLETE :: INTEGRITY OK', { size: 11, fill: C.muted, ls: 0.08 })}
+  ${text(W - 32, H - 17, 'AUTO-GENERATED BY GITHUB ACTIONS', { size: 11, fill: C.red, anchor: 'end', ls: 0.08 })}
   <rect width="${W}" height="${H}" fill="url(#scan)" opacity=".3"/>
 </g>`;
   return svg(W, H, `Estadísticas de GitHub de ${d.login}`, body);

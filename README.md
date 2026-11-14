@@ -1,6 +1,6 @@
 <!-- ═══════════════════════════  HEADER  ═══════════════════════════ -->
 <p align="center">
-  <img src="./assets/header.svg" width="100%" alt="JSEBASGAMERO — Full-Stack Developer // Cybersecurity" />
+  <img src="./assets/header.svg" width="100%" alt="JSEBASGAMERO — Full-Stack Developer // .NET · Azure · Cybersecurity" />
 </p>
 
 <p align="center">
@@ -25,6 +25,15 @@
 
 <div align="center">
 <table>
+  <tr>
+    <td><code>CORE ★</code></td>
+    <td>
+      <img src="https://img.shields.io/badge/C%23-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI0ZGMDAzQyIgZD0iTTEyIDEuNSAyMS41IDd2MTBMMTIgMjIuNSAyLjUgMTdWN3oiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwRDBEMEQiIHN0cm9rZS13aWR0aD0iMi4yIiBkPSJNMTMuNiA5LjJhMy45IDMuOSAwIDEgMCAwIDUuNiIvPjxwYXRoIHN0cm9rZT0iIzBEMEQwRCIgc3Ryb2tlLXdpZHRoPSIxLjIiIGQ9Ik0xNiAxMC4ydjMuNk0xOCAxMC4ydjMuNk0xNS4yIDExLjFoMy42TTE1LjIgMTIuOWgzLjYiLz48L3N2Zz4%3D" alt="C#" />
+      <img src="https://img.shields.io/badge/.NET-0D0D0D?style=for-the-badge&logo=dotnet&logoColor=FF003C" alt=".NET" />
+      <img src="https://img.shields.io/badge/Azure-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI0ZGMDAzQyIgZD0iTTcgMTloMTAuNWE0LjUgNC41IDAgMCAwIC42LTguOTZBNiA2IDAgMCAwIDYuNCA5LjEgNSA1IDAgMCAwIDcgMTl6Ii8%2BPC9zdmc%2B" alt="Azure" />
+      <br/><sub>lo que más uso hoy en día</sub>
+    </td>
+  </tr>
   <tr>
     <td><code>FRONTEND</code></td>
     <td>
