@@ -6,6 +6,11 @@
  *
  *   GITHUB_TOKEN=... GH_USER=JsebasGamero node scripts/generate-stats.mjs dist
  *   node scripts/generate-stats.mjs dist --mock     # datos de ejemplo, sin token
+ *
+ * Repos privados (opcional): si existen STATS_TOKEN (token de solo lectura) y
+ * PRIVATE_REPOS ("owner/repo,owner/repo"), sus lenguajes se suman a
+ * LANG_DISTRIBUTION. Solo se publican porcentajes por lenguaje, nunca nombres
+ * de archivos ni código. Si el token falta o vence, se usan solo repos públicos.
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -16,9 +21,11 @@ const MOCK = args.includes('--mock');
 const OUT = args.find((a) => !a.startsWith('--')) ?? 'dist';
 const LOGIN = process.env.GH_USER || process.env.GITHUB_REPOSITORY_OWNER;
 const TOKEN = process.env.GITHUB_TOKEN;
+const STATS_TOKEN = process.env.STATS_TOKEN;
+const PRIVATE_REPOS = (process.env.PRIVATE_REPOS ?? '').split(/[\s,]+/).filter((r) => r.includes('/'));
 
-// Stack con el que más trabajas hoy. Se muestra en TELEMETRÍA aparte de LANG_DISTRIBUTION,
-// porque ese gráfico solo puede medir tus repos públicos (tu trabajo diario está en repos privados).
+// Stack con el que más trabajas hoy. Se muestra en TELEMETRÍA como sección propia,
+// además de lo que mida LANG_DISTRIBUTION.
 // icon: 'csharp' | 'dotnet' | 'azure' | 'generic'
 const CORE_STACK = [
   { name: 'C#', sub: 'lenguaje principal', icon: 'csharp' },
@@ -31,10 +38,10 @@ const fmt = (n) => n.toLocaleString('en-US');
 const fecha = (iso) => (iso ? `${Number(iso.slice(8, 10))} ${MESES[Number(iso.slice(5, 7)) - 1]}` : '—');
 
 /* ───────────────────────────── DATOS ───────────────────────────── */
-async function gql(query, variables) {
+async function gql(query, variables, token = TOKEN) {
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
-    headers: { Authorization: `bearer ${TOKEN}`, 'Content-Type': 'application/json', 'User-Agent': 'profile-stats' },
+    headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json', 'User-Agent': 'profile-stats' },
     body: JSON.stringify({ query, variables }),
   });
   if (!res.ok) throw new Error(`GitHub API ${res.status}: ${await res.text()}`);
@@ -52,6 +59,7 @@ const Q_BASE = `query($login: String!) {
     repositories(first: 100, ownerAffiliations: OWNER, isFork: false, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC}) {
       totalCount
       nodes {
+        nameWithOwner
         stargazerCount
         languages(first: 10, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name } } }
       }
@@ -62,6 +70,37 @@ const Q_BASE = `query($login: String!) {
     }
   }
 }`;
+
+const Q_REPO_LANGS = `query($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    languages(first: 10, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name } } }
+  }
+}`;
+
+/** Lenguajes de los repos privados listados en PRIVATE_REPOS, leídos con STATS_TOKEN. */
+async function privateLanguages(seen) {
+  const langs = new Map();
+  let count = 0;
+  if (!PRIVATE_REPOS.length) return { langs, count };
+  if (!STATS_TOKEN) {
+    console.log('ℹ STATS_TOKEN no está configurado: LANG_DISTRIBUTION usa solo repos públicos.');
+    return { langs, count };
+  }
+  for (const full of PRIVATE_REPOS) {
+    if (seen.has(full.toLowerCase())) continue;
+    const [owner, name] = full.split('/');
+    try {
+      const { repository } = await gql(Q_REPO_LANGS, { owner, name }, STATS_TOKEN);
+      if (!repository) throw new Error('sin acceso');
+      for (const e of repository.languages.edges) langs.set(e.node.name, (langs.get(e.node.name) ?? 0) + e.size);
+      count++;
+      console.log(`✔ Lenguajes de ${full} incluidos`);
+    } catch (err) {
+      console.warn(`⚠ No se pudo leer ${full} con STATS_TOKEN (¿token vencido o sin acceso al repo?): ${String(err.message).slice(0, 200)}`);
+    }
+  }
+  return { langs, count };
+}
 
 const Q_YEAR = `query($login: String!, $from: DateTime!, $to: DateTime!) {
   user(login: $login) {
@@ -94,7 +133,10 @@ async function fetchData(login) {
     stars += r.stargazerCount;
     for (const e of r.languages.edges) langs.set(e.node.name, (langs.get(e.node.name) ?? 0) + e.size);
   }
+  const priv = await privateLanguages(new Set(u.repositories.nodes.map((r) => r.nameWithOwner.toLowerCase())));
+  for (const [name, size] of priv.langs) langs.set(name, (langs.get(name) ?? 0) + size);
   return summarize({
+    privateRepos: priv.count,
     login: u.login,
     since: u.createdAt.slice(0, 4),
     allTime,
@@ -162,7 +204,12 @@ function mockData() {
     stars: 3,
     prs: 27,
     followers: 1,
-    langs: new Map([['JavaScript', 720], ['TypeScript', 140], ['CSS', 70], ['HTML', 45], ['PLpgSQL', 15], ['Shell', 10]]),
+    // Con PRIVATE_REPOS definido simula que el token pudo leer un repo privado en C#.
+    privateRepos: PRIVATE_REPOS.length ? 1 : 0,
+    langs: new Map([
+      ['JavaScript', 720], ['TypeScript', 140], ['CSS', 70], ['HTML', 45], ['PLpgSQL', 15], ['Shell', 10],
+      ...(PRIVATE_REPOS.length ? [['C#', 2600]] : []),
+    ]),
     days,
     now,
   });
@@ -278,7 +325,7 @@ function statsSvg(d) {
   const LX = 790, LW = W - 32 - LX;
   let langs =
     text(LX, 104, 'LANG_DISTRIBUTION', { size: 12, fill: C.red, weight: 700, ls: 0.2 }) +
-    text(LX + LW, 104, `TOP ${d.langs.length} · REPOS PÚBLICOS`, { size: 11, fill: C.muted, anchor: 'end' });
+    text(LX + LW, 104, `TOP ${d.langs.length} · ${d.privateRepos ? 'PÚBLICOS + PRIVADOS' : 'REPOS PÚBLICOS'}`, { size: 11, fill: C.muted, anchor: 'end' });
   if (!d.langs.length) langs += text(LX, 140, 'sin datos todavía', { size: 13, fill: C.muted });
   d.langs.forEach((l, i) => {
     const y = 140 + i * 46;

@@ -28,6 +28,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_USER: ${{ github.repository_owner }}
+          # Opcional: token de solo lectura guardado como secreto STATS_TOKEN.
+          # Con él, los lenguajes de estos repos privados entran en LANG_DISTRIBUTION.
+          STATS_TOKEN: ${{ secrets.STATS_TOKEN }}
+          PRIVATE_REPOS: org-systime/systime
 
       - name: Serpiente
         uses: Platane/snk/svg-only@v3
