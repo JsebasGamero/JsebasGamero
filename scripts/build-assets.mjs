@@ -17,7 +17,7 @@ const PROFILE = {
   handle: 'JSEBASGAMERO',
   role: 'FULL-STACK DEVELOPER',
   focus: '.NET · AZURE · CYBERSECURITY',
-  tagline: 'C# · .NET · Azure · JavaScript · TypeScript — software seguro del frontend a la nube',
+  tagline: 'C# · .NET · Azure · TypeScript · IA agéntica — software seguro del frontend a la nube',
   host: 'jsebas@sec-ops',
   // [clave, valor, nota opcional en rojo]
   neofetch: [
@@ -29,12 +29,14 @@ const PROFILE = {
     ['Datos', 'PostgreSQL · MySQL · MongoDB · Redis · Prisma'],
     ['Cloud', 'Azure · Vercel · Docker'],
     ['DevOps', 'Git · GitHub Actions · Linux'],
+    ['IA/Agentes', 'Claude Code · MCP · Skills · Multi-agentes · Harness'],
     ['Seguridad', 'Redes · Linux · SQL · Gestión de riesgos'],
     ['Shell', 'zsh + café + curiosidad infinita'],
     ['Uptime', 'compilando ideas 24/7'],
   ],
   status: [
     'Desarrollando soluciones con C#, .NET y Azure en el día a día',
+    'Orquestando agentes de IA: Claude, MCP, skills y multi-agentes',
     'Construyendo aplicaciones web seguras de punta a punta',
     'Formándome en ciberseguridad: redes, Linux, SQL y gestión de riesgos',
     'Abierto a colaborar en proyectos con impacto real',
@@ -47,9 +49,24 @@ const PROFILE = {
     ['Herramientas del oficio: Linux y SQL', 'Bash, permisos, sistema de archivos y consultas SQL'],
     ['Activos, amenazas y vulnerabilidades', 'Clasificación de activos, amenazas y gestión de vulnerabilidades'],
   ],
+  ai: {
+    orchestrator: 'CLAUDE',
+    agents: ['PLANNER', 'CODER', 'REVIEWER', 'TESTER'],
+    mcp: ['GITHUB', 'DATABASE', 'BROWSER', 'DOCS'],
+    skills: ['skill:spec', 'skill:review', 'skill:tests'],
+    capabilities: [
+      ['Claude · Claude Code', 'desarrollo agéntico asistido por IA'],
+      ['Skills', 'capacidades reutilizables para agentes'],
+      ['Multi-agentes', 'orquestadores y subagentes en paralelo'],
+      ['MCP', 'agentes conectados a herramientas y datos'],
+      ['Harness engineering', 'tools, permisos, hooks y bucle del agente'],
+      ['Context engineering', 'prompts, memoria y contexto preciso'],
+    ],
+  },
   sections: [
     ['whoami', 'WHOAMI', 'ONLINE'],
     ['arsenal', 'ARSENAL', 'LOADED'],
+    ['agents', 'AGENTIC ENGINEERING', 'ORCHESTRATING'],
     ['security', 'SECURITY CLEARANCE', 'VERIFIED'],
     ['diagnostics', 'SYSTEM DIAGNOSTICS', 'LIVE'],
     ['snake', 'SNAKE PROTOCOL', 'HUNTING'],
@@ -61,6 +78,83 @@ const OUT = join(ROOT, 'assets');
 
 const round = (id, w, h, rx = 14) => `<clipPath id="${id}"><rect width="${w}" height="${h}" rx="${rx}"/></clipPath>`;
 const shieldPath = 'M0 -50 L42 -34 V0 C42 28 22 44 0 54 C-22 44 -42 28 -42 0 V-34 Z';
+
+/* ───────────────────────────── 3D ─────────────────────────────
+ * GitHub no ejecuta JavaScript en el README, así que el 3D se calcula aquí:
+ * se rota y proyecta cada vértice y se guardan los fotogramas como animación SVG. */
+const n1 = (v) => Math.round(v * 10) / 10;
+const rotX = ([x, y, z], a) => [x, y * Math.cos(a) - z * Math.sin(a), y * Math.sin(a) + z * Math.cos(a)];
+const rotY = ([x, y, z], a) => [x * Math.cos(a) + z * Math.sin(a), y, -x * Math.sin(a) + z * Math.cos(a)];
+const persp = ([x, y, z], D = 6) => [(x * D) / (D - z), (y * D) / (D - z)];
+
+/** Wireframe animado. at(t) devuelve los vértices 2D para t entre 0 y 2π (debe cerrar el ciclo). */
+function wire3d({ cx, cy, R, edges, at, frames = 48, dur = 8, width = 1.6, opacity = 1, dots = true, dotR = 2.4 }) {
+  const F = Array.from({ length: frames + 1 }, (_, f) => at((f / frames) * 2 * Math.PI));
+  const max = Math.max(...F.flat().map(([x, y]) => Math.max(Math.abs(x), Math.abs(y))));
+  const s = R / max;
+  const P = F.map((pts) => pts.map(([x, y]) => [n1(cx + x * s), n1(cy + y * s)]));
+  const d = (pts) => edges.map(([a, b]) => `M${pts[a][0]} ${pts[a][1]}L${pts[b][0]} ${pts[b][1]}`).join('');
+  const loop = `dur="${dur}s" repeatCount="indefinite"`;
+  let out =
+    `<path d="${d(P[0])}" fill="none" stroke="${C.red}" stroke-width="${width}" stroke-opacity="${opacity}" stroke-linecap="round" filter="url(#neonS)">` +
+    `<animate attributeName="d" values="${P.map(d).join(';')}" ${loop}/></path>`;
+  if (dots) {
+    P[0].forEach(([x, y], i) => {
+      out +=
+        `<circle cx="${x}" cy="${y}" r="${dotR}" fill="#ffd6de">` +
+        `<animate attributeName="cx" values="${P.map((p) => p[i][0]).join(';')}" ${loop}/>` +
+        `<animate attributeName="cy" values="${P.map((p) => p[i][1]).join(';')}" ${loop}/></circle>`;
+    });
+  }
+  return out;
+}
+
+/** Hipercubo 4D: rota en los planos XW e YZ y se proyecta 4D → 3D → 2D. */
+function tesseract() {
+  const V = Array.from({ length: 16 }, (_, i) => [0, 1, 2, 3].map((b) => ((i >> b) & 1 ? 1 : -1)));
+  const edges = [];
+  for (let i = 0; i < 16; i++) for (let b = 0; b < 4; b++) if (i < (i ^ (1 << b))) edges.push([i, i ^ (1 << b)]);
+  const at = (t) =>
+    V.map(([x, y, z, w]) => {
+      const c = Math.cos(t), s = Math.sin(t);
+      [x, w] = [x * c - w * s, x * s + w * c];
+      [y, z] = [y * c - z * s, y * s + z * c];
+      const k = 3 / (3 - w);
+      return persp(rotY(rotX([x * k, y * k, z * k], 0.45), 0.6), 9);
+    });
+  return { edges, at };
+}
+
+/** Icosaedro girando; spin debe ser entero para que el ciclo cierre. */
+function icosahedron(spin = 1) {
+  const g = (1 + Math.sqrt(5)) / 2;
+  const V = [[0, 1, g], [0, 1, -g], [0, -1, g], [0, -1, -g], [1, g, 0], [1, -g, 0], [-1, g, 0], [-1, -g, 0], [g, 0, 1], [g, 0, -1], [-g, 0, 1], [-g, 0, -1]];
+  const edges = [];
+  for (let i = 0; i < 12; i++)
+    for (let j = i + 1; j < 12; j++) if (Math.abs(V[i].reduce((a, v, k) => a + (v - V[j][k]) ** 2, 0) - 4) < 1e-6) edges.push([i, j]);
+  const at = (t) => V.map((v) => persp(rotX(rotY(v, spin * t), 0.5 + 0.25 * Math.sin(t)), 7));
+  return { edges, at };
+}
+
+/** Globo holográfico con meridianos que giran y un satélite en órbita. */
+function globe(cx, cy, R, dur = 10) {
+  const frames = 48;
+  let out = `<g transform="rotate(-20 ${cx} ${cy})" fill="none" stroke="${C.red}">`;
+  out += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${C.redDeep}" fill-opacity=".35" stroke-width="1.8" filter="url(#neonS)"/>`;
+  for (const lat of [-60, -30, 0, 30, 60]) {
+    const a = (lat * Math.PI) / 180;
+    out += `<ellipse cx="${cx}" cy="${n1(cy + R * Math.sin(a))}" rx="${n1(R * Math.cos(a))}" ry="${n1(R * Math.cos(a) * 0.18)}" stroke-opacity=".45"/>`;
+  }
+  for (let k = 0; k < 6; k++) {
+    const vals = Array.from({ length: frames + 1 }, (_, f) => n1(R * Math.abs(Math.sin((k * Math.PI) / 6 + (f / frames) * Math.PI))));
+    out += `<ellipse cx="${cx}" cy="${cy}" rx="${vals[0]}" ry="${R}" stroke-opacity=".75"><animate attributeName="rx" values="${vals.join(';')}" dur="${dur}s" repeatCount="indefinite"/></ellipse>`;
+  }
+  const rx = R * 1.55, ry = R * 0.36;
+  const orbit = `M${n1(cx - rx)} ${cy}a${n1(rx)} ${n1(ry)} 0 1 0 ${n1(2 * rx)} 0a${n1(rx)} ${n1(ry)} 0 1 0 ${n1(-2 * rx)} 0`;
+  out += `<path d="${orbit}" stroke-opacity=".6" stroke-dasharray="3 5"/>`;
+  out += `<circle r="4" fill="#ffd6de" stroke="none" filter="url(#neonS)"><animateMotion path="${orbit}" dur="4s" repeatCount="indefinite"/></circle>`;
+  return out + '</g>';
+}
 
 /* ───────────────────────────── HEADER ───────────────────────────── */
 function header() {
@@ -129,7 +223,7 @@ function header() {
     `<circle class="blink" cx="${n2(W - 30 - tw(right1, 13, 0.1) - 14)}" cy="35.5" r="5" fill="${C.red}" filter="url(#neonS)"/>` +
     text(W - 30, 40, right1, { size: 13, fill: C.red, weight: 700, anchor: 'end', ls: 0.1 }) +
     text(W - 30, 58, 'ENCRYPTION AES-256 · TLS 1.3', { size: 11, fill: C.muted, anchor: 'end' }) +
-    text(30, H - 20, 'NODE 0x4A53 :: UPLINK 100% :: PING 12ms', { size: 11, fill: C.muted }) +
+    text(30, H - 20, 'NODE 0x4A53 :: AI AGENTS ONLINE :: MCP LINKED', { size: 11, fill: C.muted }) +
     text(W - 30, H - 20, 'STATUS: ONLINE', { size: 12, fill: C.red, weight: 700, anchor: 'end', ls: 0.1, cls: 'blink' });
 
   const css = `
@@ -158,6 +252,10 @@ ${round('rd', W, H, 16)}
   <rect width="${W}" height="${H}" fill="${C.bg}"/>
   <g>${rain}</g>
   <ellipse cx="${CX}" cy="190" rx="560" ry="150" fill="url(#hole)"/>
+  ${globe(118, 176, 56)}
+  ${text(118, 268, 'NET::GLOBAL_NODE', { size: 10, fill: C.muted, anchor: 'middle', ls: 0.1 })}
+  ${wire3d({ cx: W - 118, cy: 176, R: 66, ...tesseract(), dur: 12, width: 1.4 })}
+  ${text(W - 118, 268, 'CORE::TESSERACT.4D', { size: 10, fill: C.muted, anchor: 'middle', ls: 0.1 })}
   <ellipse cx="${CX}" cy="${HZ}" rx="520" ry="16" fill="${C.red}" opacity=".28" filter="url(#blur12)"/>
   <g stroke="url(#floorV)" stroke-width="1">${floorV}</g>
   ${floorH}
@@ -319,6 +417,93 @@ function certs() {
   return svg(W, H, 'Certificaciones de ciberseguridad', body);
 }
 
+/* ───────────────────────────── AGENT MESH (IA) ───────────────────────────── */
+function agents() {
+  const A = PROFILE.ai;
+  const W = 1200, H = 456, OX = 395, OY = 262;
+  const ys = [164, 236, 308, 380];
+  const LX = 64, RX = 588, NW = 140;
+  let edges = '', packets = '', nodes = '';
+
+  const node = (x, y, label, sub, i) =>
+    `<rect x="${x}" y="${y - 23}" width="${NW}" height="46" rx="8" fill="${C.tile}" stroke="${C.red}" stroke-opacity=".6"/>` +
+    `<circle class="blink" style="animation-delay:${n2(i * 0.27)}s" cx="${x + 16}" cy="${y}" r="4" fill="${C.red}"/>` +
+    text(x + 30, y - 2, label, { size: 13, weight: 700, fill: C.white, ls: 0.06 }) +
+    text(x + 30, y + 14, sub, { size: 10, fill: C.muted });
+  // Conexión con dos paquetes de datos viajando en sentidos opuestos
+  const link = (d, i) => {
+    edges += `<path d="${d}" fill="none" stroke="${C.red}" stroke-opacity=".35" stroke-width="1.5"/>`;
+    packets +=
+      `<circle r="3.5" fill="${C.redHot}" filter="url(#neonS)"><animateMotion path="${d}" dur="${n2(2.2 + (i % 4) * 0.35)}s" repeatCount="indefinite"/></circle>` +
+      `<circle r="2.5" fill="#ffd6de"><animateMotion path="${d}" dur="${n2(2.8 + (i % 3) * 0.4)}s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"/></circle>`;
+  };
+  A.agents.forEach((a, i) => {
+    nodes += node(LX, ys[i], a, 'sub-agent', i);
+    link(`M${LX + NW} ${ys[i]} C${LX + NW + 66} ${ys[i]} ${OX - 110} ${OY} ${OX - 58} ${OY}`, i);
+  });
+  A.mcp.forEach((m, i) => {
+    nodes += node(RX, ys[i], m, 'mcp server', i + 4);
+    link(`M${RX} ${ys[i]} C${RX - 66} ${ys[i]} ${OX + 110} ${OY} ${OX + 58} ${OY}`, i + 4);
+  });
+
+  let skills = '';
+  A.skills.forEach((s, i) => {
+    const cx = OX + (i - 1) * 118;
+    skills +=
+      `<line x1="${cx}" y1="150" x2="${OX}" y2="${OY - 62}" stroke="${C.red}" stroke-opacity=".35" stroke-dasharray="3 4"/>` +
+      `<rect x="${cx - 54}" y="128" width="108" height="22" rx="11" fill="${C.redDeep}" stroke="${C.red}" stroke-opacity=".7"/>` +
+      text(cx, 143, s, { size: 11, fill: C.red, weight: 700, anchor: 'middle' });
+  });
+
+  // Núcleo: icosaedro 3D con otro interior girando al revés
+  const orch =
+    `<circle cx="${OX}" cy="${OY}" r="84" fill="none" stroke="${C.red}" stroke-opacity=".35" stroke-dasharray="2 6"><animateTransform attributeName="transform" type="rotate" from="0 ${OX} ${OY}" to="360 ${OX} ${OY}" dur="30s" repeatCount="indefinite"/></circle>` +
+    `<circle cx="${OX}" cy="${OY}" r="64" fill="${C.redDeep}" fill-opacity=".5"/>` +
+    `<circle cx="${OX}" cy="${OY}" r="64" fill="none" stroke="${C.red}" stroke-width="2"><animate attributeName="r" values="64;100" dur="2.6s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" values=".6;0" dur="2.6s" repeatCount="indefinite"/></circle>` +
+    wire3d({ cx: OX, cy: OY, R: 54, ...icosahedron(1), dur: 10 }) +
+    wire3d({ cx: OX, cy: OY, R: 22, ...icosahedron(-2), dur: 10, width: 1.2, opacity: 0.75, dots: false }) +
+    text(OX, OY + 94, A.orchestrator, { size: 16, weight: 700, fill: C.white, anchor: 'middle', ls: 0.2, filter: 'neonS' }) +
+    text(OX, OY + 110, 'orchestrator', { size: 10, fill: C.red, anchor: 'middle', ls: 0.15 });
+
+  const CX0 = 790, CWd = W - 30 - CX0, n = A.capabilities.length;
+  let caps =
+    text(CX0, 112, 'CAPABILITIES', { size: 11, fill: C.red, weight: 700, ls: 0.2 }) +
+    text(CX0 + CWd, 112, `${n}/${n} ONLINE`, { size: 11, fill: C.muted, anchor: 'end' });
+  A.capabilities.forEach(([name, sub], i) => {
+    const y = 128 + i * 50;
+    caps += appear(
+      `<rect x="${CX0}" y="${y}" width="${CWd}" height="42" rx="6" fill="${C.tile}" stroke="${C.red}" stroke-opacity=".16"/>` +
+        `<rect x="${CX0}" y="${y + 8}" width="3" height="26" fill="${C.red}"/>` +
+        text(CX0 + 16, y + 26, `0${i + 1}`, { size: 12, fill: C.red, weight: 700 }) +
+        text(CX0 + 48, y + 19, name, { size: 15, weight: 700, fill: C.white }) +
+        text(CX0 + 48, y + 35, sub, { size: 11, fill: C.muted }) +
+        `<circle class="blink" style="animation-delay:${n2(i * 0.2)}s" cx="${CX0 + CWd - 16}" cy="${y + 21}" r="3.5" fill="${C.red}"/>`,
+      0.3 + i * 0.15,
+      0.4,
+    );
+  });
+
+  const body = `${defs(round('rd', W, H))}
+<g clip-path="url(#rd)">
+  ${frame(W, H)}
+  ${panelHead(W, 'AGENT MESH', '// desarrollo de software con IA', 'MCP · MULTI-AGENT · HARNESS')}
+  <rect x="40" y="88" width="712" height="${H - 118}" rx="14" fill="none" stroke="${C.red}" stroke-opacity=".4" stroke-dasharray="6 6"><animate attributeName="stroke-dashoffset" values="0;-24" dur="1.5s" repeatCount="indefinite"/></rect>
+  ${text(58, 112, 'HARNESS', { size: 11, fill: C.red, weight: 700, ls: 0.2 })}
+  ${text(58 + tw('HARNESS', 11, 0.2) + 10, 112, ':: tools · permisos · contexto · hooks', { size: 11, fill: C.muted })}
+  ${text(LX, 133, 'SUB-AGENTS', { size: 10, fill: C.red, weight: 700, ls: 0.15 })}
+  ${text(RX, 133, 'MCP SERVERS', { size: 10, fill: C.red, weight: 700, ls: 0.15 })}
+  ${edges}
+  ${skills}
+  ${orch}
+  ${nodes}
+  ${packets}
+  ${text(OX, 412, 'AGENT LOOP :: plan → code → review → test → ship', { size: 11, fill: C.muted, anchor: 'middle', ls: 0.05 })}
+  ${caps}
+  <rect width="${W}" height="${H}" fill="url(#scan)" opacity=".3"/>
+</g>`;
+  return svg(W, H, 'Desarrollo de software con IA: agentes, MCP y harness', body);
+}
+
 /* ───────────────────────────── SECCIONES ───────────────────────────── */
 function section(n, title, tag) {
   // Fondo oscuro propio: se ve igual con el tema claro u oscuro de GitHub.
@@ -381,6 +566,7 @@ const files = {
   'header.svg': header(),
   'terminal.svg': terminal(),
   'certs.svg': certs(),
+  'agents.svg': agents(),
   'btn-linkedin.svg': button('LINKEDIN', ICON_LINKEDIN),
   'btn-email.svg': button('EMAIL', ICON_EMAIL),
   'footer.svg': footer(),

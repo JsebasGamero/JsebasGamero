@@ -35,6 +35,19 @@
     </td>
   </tr>
   <tr>
+    <td><code>AI_AGENTS</code></td>
+    <td>
+      <img src="https://img.shields.io/badge/Claude-0D0D0D?style=for-the-badge&logo=claude&logoColor=FF003C" alt="Claude" />
+      <img src="https://img.shields.io/badge/Claude%20Code-0D0D0D?style=for-the-badge&logo=claude&logoColor=FF003C" alt="Claude Code" />
+      <img src="https://img.shields.io/badge/MCP-0D0D0D?style=for-the-badge&logo=modelcontextprotocol&logoColor=FF003C" alt="MCP" />
+      <img src="https://img.shields.io/badge/Skills-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI0ZGMDAzQyIgZD0iTTEzIDEgNCAxNGg2LjVMOSAyM2wxMC0xM2gtNi41eiIvPjwvc3ZnPg%3D%3D" alt="Skills" />
+      <img src="https://img.shields.io/badge/Multi--agentes-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPGcgZmlsbD0iI0ZGMDAzQyI%2BPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMy42Ii8%2BPGNpcmNsZSBjeD0iNCIgY3k9IjUiIHI9IjIuNCIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iNSIgcj0iMi40Ii8%2BPGNpcmNsZSBjeD0iNCIgY3k9IjE5IiByPSIyLjQiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjE5IiByPSIyLjQiLz48L2c%2BPHBhdGggc3Ryb2tlPSIjRkYwMDNDIiBzdHJva2Utd2lkdGg9IjEuOCIgZD0iTTUuOCA2LjYgOS41IDEwTTE4LjIgNi42IDE0LjUgMTBNNS44IDE3LjQgOS41IDE0TTE4LjIgMTcuNCAxNC41IDE0Ii8%2BPC9zdmc%2B" alt="Multi-agentes" />
+      <img src="https://img.shields.io/badge/Orquestadores-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPGcgZmlsbD0iI0ZGMDAzQyI%2BPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMy42Ii8%2BPGNpcmNsZSBjeD0iNCIgY3k9IjUiIHI9IjIuNCIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iNSIgcj0iMi40Ii8%2BPGNpcmNsZSBjeD0iNCIgY3k9IjE5IiByPSIyLjQiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjE5IiByPSIyLjQiLz48L2c%2BPHBhdGggc3Ryb2tlPSIjRkYwMDNDIiBzdHJva2Utd2lkdGg9IjEuOCIgZD0iTTUuOCA2LjYgOS41IDEwTTE4LjIgNi42IDE0LjUgMTBNNS44IDE3LjQgOS41IDE0TTE4LjIgMTcuNCAxNC41IDE0Ii8%2BPC9zdmc%2B" alt="Orquestadores" />
+      <img src="https://img.shields.io/badge/Harness%20engineering-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkYwMDNDIiBzdHJva2Utd2lkdGg9IjIuNCIgZD0iTTggM0gzdjVNMTYgM2g1djVNOCAyMUgzdi01TTE2IDIxaDV2LTUiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIzLjgiIGZpbGw9IiNGRjAwM0MiLz48L3N2Zz4%3D" alt="Harness engineering" />
+      <img src="https://img.shields.io/badge/Context%20engineering-0D0D0D?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPHBhdGggZmlsbD0iI0ZGMDAzQyIgZD0iTTEyIDIgMiA3bDEwIDUgMTAtNXoiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNGRjAwM0MiIHN0cm9rZS13aWR0aD0iMiIgZD0iTTIgMTJsMTAgNSAxMC01TTIgMTdsMTAgNSAxMC01Ii8%2BPC9zdmc%2B" alt="Context engineering" />
+    </td>
+  </tr>
+  <tr>
     <td><code>FRONTEND</code></td>
     <td>
       <img src="https://img.shields.io/badge/JavaScript-0D0D0D?style=for-the-badge&logo=javascript&logoColor=FF003C" alt="JavaScript" />
@@ -87,16 +100,23 @@
 </table>
 </div>
 
-<!-- ═══════════════════════════  03 · SECURITY CLEARANCE  ═══════════════════════════ -->
-<img src="./assets/section-security.svg" width="100%" alt="03 · SECURITY CLEARANCE" />
+<!-- ═══════════════════════════  03 · AGENTIC ENGINEERING  ═══════════════════════════ -->
+<img src="./assets/section-agents.svg" width="100%" alt="03 · AGENTIC ENGINEERING" />
+
+<p align="center">
+  <img src="./assets/agents.svg" width="100%" alt="Agent mesh: orquestador Claude con subagentes, servidores MCP y skills dentro del harness" />
+</p>
+
+<!-- ═══════════════════════════  04 · SECURITY CLEARANCE  ═══════════════════════════ -->
+<img src="./assets/section-security.svg" width="100%" alt="04 · SECURITY CLEARANCE" />
 
 <p align="center">
   <img src="./assets/certs.svg" width="100%" alt="Certificaciones de ciberseguridad" />
 </p>
 
-<!-- ═══════════════════════════  04 · SYSTEM DIAGNOSTICS  ═══════════════════════════ -->
+<!-- ═══════════════════════════  05 · SYSTEM DIAGNOSTICS  ═══════════════════════════ -->
 <!-- stats.svg y activity.svg se generan cada 6 h con .github/workflows/profile.yml -->
-<img src="./assets/section-diagnostics.svg" width="100%" alt="04 · SYSTEM DIAGNOSTICS" />
+<img src="./assets/section-diagnostics.svg" width="100%" alt="05 · SYSTEM DIAGNOSTICS" />
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/JsebasGamero/JsebasGamero/output/stats.svg" width="100%" alt="Estadísticas de GitHub" />
@@ -106,8 +126,8 @@
   <img src="https://raw.githubusercontent.com/JsebasGamero/JsebasGamero/output/activity.svg" width="100%" alt="Actividad de los últimos 30 días" />
 </p>
 
-<!-- ═══════════════════════════  05 · SNAKE PROTOCOL  ═══════════════════════════ -->
-<img src="./assets/section-snake.svg" width="100%" alt="05 · SNAKE PROTOCOL" />
+<!-- ═══════════════════════════  06 · SNAKE PROTOCOL  ═══════════════════════════ -->
+<img src="./assets/section-snake.svg" width="100%" alt="06 · SNAKE PROTOCOL" />
 
 <p align="center">
   <picture>
