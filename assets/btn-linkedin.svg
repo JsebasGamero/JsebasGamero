@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="64" viewBox="0 0 300 64" role="img" aria-labelledby="title" font-family="'JetBrains Mono','Fira Code','SF Mono','Cascadia Code',Menlo,Consolas,'DejaVu Sans Mono','Liberation Mono','Courier New',monospace">
+<title id="title">LINKEDIN</title>
+<style>
+text{white-space:pre}
+.blink{animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<defs>
+<filter id="neon" x="-25%" y="-80%" width="150%" height="260%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="7" result="b"/><feFlood flood-color="#ff003c" flood-opacity="0.8"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="neonS" x="-25%" y="-80%" width="150%" height="260%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="3" result="b"/><feFlood flood-color="#ff003c" flood-opacity="0.9"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" opacity=".5"/></pattern>
+<clipPath id="bs"><polygon points="16,1.5 298.5,1.5 298.5,47 283,62.5 1.5,62.5 1.5,16"/></clipPath>
+<linearGradient id="shine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff003c" stop-opacity="0"/><stop offset=".5" stop-color="#ff003c" stop-opacity=".28"/><stop offset="1" stop-color="#ff003c" stop-opacity="0"/></linearGradient>
+</defs>
+<polygon points="16,1.5 298.5,1.5 298.5,47 283,62.5 1.5,62.5 1.5,16" fill="#09090b" stroke="#ff003c" stroke-width="2"/>
+<g clip-path="url(#bs)"><rect x="-160" y="0" width="110" height="64" fill="url(#shine)" transform="skewX(-20)"><animate attributeName="x" values="-160;380" dur="3.2s" repeatCount="indefinite"/></rect></g>
+<g transform="translate(36 32)" filter="url(#neonS)"><rect x="-14" y="-14" width="28" height="28" rx="5" fill="none" stroke="#ff003c" stroke-width="2.2"/><text xml:space="preserve" x="0" y="6" font-size="16" fill="#ff003c" font-weight="700" text-anchor="middle" textLength="19.2" lengthAdjust="spacing">in</text></g>
+<text xml:space="preserve" x="68" y="39" font-size="19" fill="#f5f5f7" font-weight="700" filter="url(#neonS)" textLength="112.48" lengthAdjust="spacing">LINKEDIN</text>
+<text xml:space="preserve" x="278" y="39" font-size="16" fill="#ff003c" font-weight="700" text-anchor="end" class="blink" textLength="19.2" lengthAdjust="spacing">&gt;&gt;</text>
+</svg>
